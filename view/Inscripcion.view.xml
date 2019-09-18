@@ -1,0 +1,242 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="com.blueboot.BeneficioEducacional.controller.Inscripcion" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified">
+    <Page title="{i18n>INSCRIPCION_TITULO}">
+        <content>
+            <Wizard id="wizardInscripcion" complete="wizardCompletedHandler" showNextButton="true">
+                <WizardStep id="paso1" title="{i18n>PASO1_TITULO}" validated="false" activate="validarPaso1">
+                    <f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="5" emptySpanL="5" emptySpanM="5" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                        <f:content>
+                            <Label text="{i18n>PASO1_DEPENDIENTE}" required="true" />
+                            <Select
+                                forceSelection="false"
+                                change="validarPaso1" 
+                                items="{/Dependientes}" 
+                                selectedKey="{dependiente}">
+                                <core:Item text="{nombre}" key="{id}" />
+                            </Select>
+                            <Label text="{i18n>PASO1_TIPO}" required="true" />
+                            <Select selectedKey="{tipo}" items="{/TiposBeneficio}" change="onTipoChange">
+                                <core:Item text="{id} - {desc}" key="{id}" />
+                            </Select>
+                            <Label visible="{= ${tipo} === '5' || ${tipo} === '6' || ${tipo} === '7'}" text="{i18n>PASO1_PUBLICA}" />
+                            <HBox visible="{= ${tipo} === '5' || ${tipo} === '6' || ${tipo} === '7'}">
+                                <RadioButton groupName="Publica" text="{i18n>SI}" selected="{publica}" />
+                                <RadioButton groupName="Publica" text="{i18n>NO}" />
+                            </HBox>
+                            <Label text="{i18n>PASO1_PERIODO}" required="true" />
+                            <Select 
+                                width="120px"
+                                change="onPeriodoChange"
+                                selectedKey="{periodo}"
+                                items="{/Periodos}" >
+                                <core:Item text="{}" key="{}" />
+                            </Select>
+                        </f:content>
+                    </f:SimpleForm>
+                </WizardStep>
+                <WizardStep id="paso2" title="{i18n>PASO2_TITULO}" validated="false">
+                    <TextArea width="100%" editable="false" value="{i18n>PASO2_TERMINOS1}{i18n>NEWLINE}{i18n>NEWLINE}{i18n>PASO2_TERMINOS2}{i18n>NEWLINE}{i18n>NEWLINE}{i18n>PASO2_TERMINOS3}" rows="8" />
+                    <f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="5" emptySpanL="5" emptySpanM="5" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                        <f:content>
+                        	<Label text="{i18n>PASO2_LEIDO}" />
+	            			<CheckBox selected="{contrato}" select="validarPaso2"/>
+	            		</f:content>
+	            	</f:SimpleForm>
+                </WizardStep>
+                <WizardStep id="paso3" title="{i18n>PASO3_TITULO}" validated="false">
+                	<f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                        <f:content>
+                            <Label text="{i18n>PASO3_NOMBRE}" required="true" />
+                            <Input value="{
+                                path: 'nombre',
+                                type : 'sap.ui.model.type.String',
+                                constraints: {
+                                    minLength: 1
+                                }
+                            }" change="validarPaso3" />
+                            <Label text="{i18n>SELECCIONE}" required="true" />
+                            <Select items="{/TiposDoc}" selectedKey="{tipoDoc}" change="validarPaso3">
+                                <core:Item text="{nombre}" key="{id}" />
+                            </Select>
+                            <Label text="{i18n>PASO3_CPF}" required="true" />
+                            <Input value="{documento}" change="validarDocumento" />
+                            <Label text="{i18n>PASO3_ESTADO}" required="true" />
+                            <Select items="{/Estados}" forceSelection="false" selectedKey="{estado}" change="validarPaso3" >
+                            	<core:Item text="{nombre} ({id})" key="{id}" />
+                            </Select>
+                        </f:content>
+                    </f:SimpleForm>
+                </WizardStep>
+                <WizardStep id="paso4" title="{i18n>PASO4_TITULO}" validated="false" complete="handlePaso4Complete">
+                	<f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                        <f:content>
+                            <Label text="{i18n>PASO4_SERIE}" required="true" visible="{= ${tipo} === '5' || ${tipo} === '6'}" />
+                            <Select items="{/Series}" selectedKey="{serie}" forceSelection="false" visible="{= ${tipo} === '5' || ${tipo} === '6'}" change="validarPaso4">
+                            	<core:Item text="{desc}" key="{id}" />
+                            </Select>
+                            <Label text="{i18n>PASO4_REPITE}" visible="{= ${tipo} === '5' || ${tipo} === '6'}"/>
+                            <HBox visible="{= ${tipo} === '5' || ${tipo} === '6'}">
+	                            <RadioButton groupName="Repite" text="{i18n>SI}" selected="{repite}" />
+								<RadioButton groupName="Repite" text="{i18n>NO}" selected="true" />
+							</HBox>
+                        </f:content>
+                    </f:SimpleForm>
+                    <u:CalendarMonthInterval
+                        id="calendario"
+                    	width="100%"
+                    	intervalSelection="true"
+                        select="onCalendarioChange" />
+                    <f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                        <f:content>
+                            <Label text="{i18n>PASO4_PERIODO}" />
+                            <Input enabled="false" 
+                                value="{
+                                path: 'inicioPeriodo',
+                                type: 'sap.ui.model.type.Date',
+                                formatOptions: {
+                                    pattern: 'dd/MM/yyyy'
+                                }} a {
+                                path: 'finPeriodo',
+                                type: 'sap.ui.model.type.Date',
+                                formatOptions: {
+                                    pattern: 'dd/MM/yyyy'
+                                }}" />
+                        </f:content>
+                    </f:SimpleForm>
+                </WizardStep>
+                <WizardStep id="paso5" title="{i18n>PASO5_TITULO}" validated="true" complete="handlePaso5Complete">
+                    <!-- Visible para tipo= 4, 5 o 6 con institucion no publica -->
+                	<f:SimpleForm visible="{= (${tipo} === '5' || ${tipo} === '6' || ${tipo} === '4') &amp;&amp; !${publica}}" editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                        <f:content>
+                            <Label text="{i18n>PASO5_PAGO_MATRICULA}" />
+                            <HBox>
+	                            <RadioButton groupName="Matricula" text="{i18n>SI}" selected="{hayMatricula}" />
+								<RadioButton groupName="Matricula" text="{i18n>NO}" />
+							</HBox>
+							<Label text="{i18n>PASO5_MATRICULA}" />
+							<Input enabled="{hayMatricula}" value="{
+                                    path: 'matricula',
+                                    type: 'sap.ui.model.type.Float',
+                                    formatOptions: {
+                                        decimals: 2
+                                    }}" />
+                        </f:content>
+                    </f:SimpleForm>
+
+                    <!-- Visible para tipo= 5, 6 o 7 con institucion publica -->
+                    <f:SimpleForm visible="{= (${tipo} === '5' || ${tipo} === '6' || ${tipo} === '7') &amp;&amp; ${publica}}" editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                        <f:content>
+                            <Label text="{i18n>PASO5_PAGO_MATERIAL}" />
+                            <HBox>
+                                <RadioButton groupName="Material" text="{i18n>SI}" selected="{hayMaterial}" />
+                                <RadioButton groupName="Material" text="{i18n>NO}" />
+                            </HBox>
+                            <Label text="{i18n>PASO5_MATERIAL}" />
+                            <Input enabled="{hayMaterial}" value="{
+                                    path: 'material',
+                                    type: 'sap.ui.model.type.Float',
+                                    formatOptions: {
+                                        decimals: 2
+                                    }}" />
+                        </f:content>
+                    </f:SimpleForm>
+
+                    <!-- Visible para tipo= 7 con institucion no publica -->
+                    <f:SimpleForm visible="{= ${tipo} === '7' &amp;&amp; !${publica}}" editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                        <f:content>
+                            <Label text="{i18n>PASO5_PAGO_LIBROS}" />
+                            <HBox>
+                                <RadioButton groupName="Libros" text="{i18n>SI}" selected="{hayLibros}" />
+                                <RadioButton groupName="Libros" text="{i18n>NO}" />
+                            </HBox>
+                            <Label text="{i18n>PASO5_MATERIAL}" />
+                            <Input enabled="{hayLibros}" value="{
+                                    path: 'libros',
+                                    type: 'sap.ui.model.type.Float',
+                                    formatOptions: {
+                                        decimals: 2
+                                    }}" />
+                        </f:content>
+                    </f:SimpleForm>
+                    <Panel>
+                        <headerToolbar>
+                            <Toolbar>
+                                <Title text="{i18n>PASO5_MENSUALIDAD}" />
+                            </Toolbar>
+                        </headerToolbar>
+                        <HBox>                        
+    	                    <Table items="{/Meses1}" growing="true" growingThreshold="10" width="95%" >
+    							<columns>
+    								<Column width="90px">
+    									<Label text="{i18n>PASO5_MES}" />
+    								</Column>
+    								<Column >
+    									<Label text="{i18n>PASO5_VALOR}" />
+    								</Column>
+    								<Column width="50px">
+    									<Label text="" />
+    								</Column>
+    							</columns>
+    							<items>
+    								<ColumnListItem>
+    									<cells>
+    										<Label required="true" text="{mes}" /> 
+    										<Input name="{mes}" value="{
+                                                path: 'valor',
+                                                type: 'sap.ui.model.type.Float',
+                                                formatOptions: {
+                                                    decimals: 2
+                                                }}" />
+    										<Button icon="sap-icon://copy" press="handleCopyPressed" />
+    									</cells>
+    								</ColumnListItem>
+    							</items>
+    						</Table>
+    						 <Table items="{/Meses2}" growing="true" growingThreshold="10" width="95%">
+    							<columns>
+    								<Column width="90px">
+    									<Label text="{i18n>PASO5_MES}" />
+    								</Column>
+    								<Column >
+    									<Label text="{i18n>PASO5_VALOR}" />
+    								</Column>
+    								<Column width="50px">
+    									<Label text=" " />
+    								</Column>
+    							</columns>
+    							<items>
+    								<ColumnListItem>
+    									<cells>
+    										<Label required="true" text="{mes}" /> 
+    										<Input
+                                                name="{mes}" value="{
+                                                path: 'valor',
+                                                type: 'sap.ui.model.type.Float',
+                                                formatOptions: {
+                                                    decimals: 2
+                                                }}" />
+    										<Button icon="sap-icon://copy" press="handleCopyPressed"/>
+    									</cells>
+    								</ColumnListItem>
+    							</items>
+    						</Table>
+    					</HBox>
+                    </Panel>
+                </WizardStep>
+            </Wizard>
+        </content>
+        <footer>
+			<Toolbar>
+				<Button
+                    icon="sap-icon://alert"
+                    text="{= ${message>/}.length }"
+                    visible="{= ${message>/}.length > 0 }"
+                    type="Emphasized"
+                    press="onMessagePopoverPress" />
+				<ToolbarSpacer/>
+				<Button text="{i18n>GUARDAR}" type="Accept" icon="sap-icon://save" enabled="{= ${message>/}.length === 0 &amp;&amp; ${/Completo}}" />
+				<Button text="{i18n>ELIMINAR}" type="Reject" icon="sap-icon://sys-cancel" enabled="false" />
+				<Button text="{i18n>ENVIAR}" icon="sap-icon://paper-plane" enabled="{= ${message>/}.length === 0 &amp;&amp; ${/Completo}}" />
+			</Toolbar>
+		</footer>
+    </Page>
+</mvc:View>

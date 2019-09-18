@@ -1,0 +1,24 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.blueboot.BeneficioEducacional.controller.Master" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page title="{i18n>MASTER_TITULO}">
+		<content>
+			<Panel
+				width="auto">
+				<Button
+					width="100%"
+					press="onInscripcionPressed"
+					text="{i18n>INSCRIPCION}"/>
+			</Panel>
+			<List
+				noDataText="{i18n>NO_DATA}"
+				headerText="{i18n>ALTERACION}">
+				<StandardListItem />
+			</List>
+			<List
+				noDataText="{i18n>NO_DATA}"
+				headerText="{i18n>CANCELACION}">
+				<StandardListItem />
+			</List>
+		</content>
+	</Page>
+</mvc:View>
