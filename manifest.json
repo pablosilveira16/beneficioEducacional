@@ -72,22 +72,14 @@
 				"async": true,
 				"viewPath": "com.blueboot.BeneficioEducacional.view",
 				"controlAggregation": "pages",
-				"controlId": "idSplitAppControl",
+				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
 			"routes": [
 				{
-					"name": "master",
+					"name": "inscripcion",
 					"pattern": "",
 					"target": [
-						"Master"
-					]
-				},
-				{
-					"name": "inscripcion",
-					"pattern": "insc",
-					"target": [
-						"Master",
 						"Inscripcion"
 					]
 				}
@@ -95,17 +87,7 @@
 			"targets": {
 				"Inscripcion": {
 					"viewType": "XML",
-					"viewName": "Inscripcion",
-					"viewLevel": 2,
-					"controlId": "idSplitAppControl",
-					"controlAggregation": "detailPages"
-				},
-				"Master": {
-					"viewType": "XML",
-					"viewName": "Master",
-					"viewLevel": 1,
-					"controlAggregation": "masterPages",
-					"controlId": "idSplitAppControl"
+					"viewName": "Inscripcion"
 				}
 			}
 		}

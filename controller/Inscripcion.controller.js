@@ -17,6 +17,7 @@ sap.ui.define([
         onInit: function() {
             // ---- SAPUI5 MESSAGE POPOVER SAMPLE ----
             var oModel, oView;
+            this._initLocalModel();
 
             oView = this.getView();
 
@@ -174,13 +175,48 @@ sap.ui.define([
             });
             oModel.setProperty("/Meses1", aMeses1);
             oModel.setProperty("/Meses2", aMeses2);
+            this.validarPaso5();
         },
 
-        handlePaso4Complete: function(oEvent) {
-            this._wizard.setShowNextButton(false);
-            this._wizard.setCurrentStep("paso5");
+        handlePaso3Complete: function(oEvent) {
+            var oModel = this.getModel(),
+                oBeneficio = oModel.getProperty("/Beneficio");
+            if (!this._correspondePaso4(oBeneficio)) {
+                this._wizard.validateStep(this.byId("paso4"));
+            }
         },
 
+        handlePaso4Activate: function(oEvent) {
+            var oModel = this.getModel(),
+                oBeneficio = oModel.getProperty("/Beneficio");
+            if (!this._correspondePaso4(oBeneficio)) {
+                this._wizard.nextStep();
+                this._wizard.setShowNextButton(false);    
+            }
+        },
+
+        _correspondePaso4: function(oBeneficio) {
+            return oBeneficio.tipo === "5" || oBeneficio.tipo === "6";
+        },
+
+        handleSelectNo: function(oEvent) {
+            var oModel = this.getModel(),
+                oBeneficio = oModel.getProperty("/Beneficio");
+            oBeneficio.material = 0;
+            oBeneficio.matricula = 0;
+            oBeneficio.libros = 0;
+            oModel.setProperty("/Beneficio", oBeneficio);
+
+            var oInput = this.byId("inputMatricula");
+            if (oInput) oInput.setValueState(ValueState.None);
+            oInput = this.byId("inputMaterial");
+            if (oInput) oInput.setValueState(ValueState.None);
+            oInput = this.byId("inputLibros");
+            if (oInput) oInput.setValueState(ValueState.None);
+
+            this.validarPaso5();
+        },
+        
         /**
          * -------------- FIN EVENTOS --------------
          */
@@ -289,7 +325,8 @@ sap.ui.define([
         validarPaso3: function(oEvent) {
         	var oModel = this.getModel(),
                 oBeneficio = oModel.getProperty("/Beneficio"),
-                bDocValido = oBeneficio.tipoDoc === "CPF"? this.validCpf(oBeneficio.documento): this.validCnpj(oBeneficio.documento);
+                sDocumento = oBeneficio.documento? oBeneficio.documento.replace(/\D/g,''): "",
+                bDocValido = oBeneficio.tipoDoc === "CPF"? this.validCpf(sDocumento): this.validCnpj(sDocumento);
             if (!oBeneficio.nombre || !bDocValido || !oBeneficio.estado) {
                 this._wizard.invalidateStep(this.byId("paso3"));
             } else {
@@ -302,13 +339,15 @@ sap.ui.define([
                 oBeneficio = oModel.getProperty("/Beneficio"),
                 oInput = oEvent.getSource(),
                 sTarget = oInput.getBindingContext().getPath() + "/" + oInput.getBindingPath("value"),
-                bValido;
+                bValido,
+                sDocumento = oBeneficio.documento? oBeneficio.documento.replace(/\D/g,''): "";
 
             this._removeMessageFromTarget(sTarget);
+
             if (oBeneficio.tipoDoc === "CPF") {
-            	bValido = this.validCpf(oBeneficio.documento);
+            	bValido = this.validCpf(sDocumento);
             } else {
-            	bValido = this.validCnpj(oBeneficio.documento);
+            	bValido = this.validCnpj(sDocumento);
             }
             if (!bValido) {
             	oInput.setValueState(ValueState.Error);
@@ -332,17 +371,13 @@ sap.ui.define([
         validarPaso4: function(oEvent) {
         	var oModel = this.getModel(),
         		oBeneficio = oModel.getProperty("/Beneficio"),
-        		oCalendario = this.byId("calendario"),
-        		oDateRange = oCalendario.getSelectedDates()[0],
-        		bCalendarioValido = oDateRange && oDateRange.getStartDate() && oDateRange.getEndDate(),
         		bSerieValida;
-        	bSerieValida = oBeneficio.tipo === "5" || oCalendario.tipo === "6"? oBeneficio.serie: true;
+        	bSerieValida = oBeneficio.tipo === "5" || oBeneficio.tipo === "6"? oBeneficio.serie: true;
 
-        	if (!bCalendarioValido || !bSerieValida) {
+        	if (!bSerieValida) {
                 this._wizard.invalidateStep(this.byId("paso4"));
             } else {
                 this._wizard.validateStep(this.byId("paso4"));
-                this.getModel().setProperty("/Completo", true);
             }
         },
 
@@ -413,6 +448,57 @@ sap.ui.define([
             resultado = soma % 11 < 2 ? 0 : 11 - soma % 11
             if (resultado != digitos.charAt(1)) return false
             return true;
+        },
+
+        validarPaso5: function (oEvent) {
+            var oModel = this.getModel(),
+                oBeneficio = oModel.getProperty("/Beneficio"),
+                oCalendario = this.byId("calendario"),
+                oDateRange = oCalendario.getSelectedDates()[0],
+                bCalendarioValido = oDateRange && oDateRange.getStartDate() && oDateRange.getEndDate(),
+                aMeses1 = oModel.getProperty("/Meses1"),
+                aMeses2 = oModel.getProperty("/Meses2"),
+                bValorValido,
+                bMensualidadesValido = aMeses1.length > 0 || aMeses2.length > 0;
+            switch (oBeneficio.tipo) {
+                case "1":
+                case "2":
+                case "3":
+                    bValorValido = true;
+                    break;
+                case "4":
+                    bValorValido = oBeneficio.publica || !oBeneficio.hayMatricula? true: oBeneficio.matricula > 0;
+                    break;
+                case "5":
+                case "6":
+                    if (!oBeneficio.publica) {
+                        bValorValido = oBeneficio.hayMatricula? oBeneficio.matricula > 0: true;
+                    } else {
+                        bValorValido = oBeneficio.hayMaterial? oBeneficio.material > 0: true;
+                    }
+                    break;
+                case "7":
+                    if (!oBeneficio.publica) {
+                        bValorValido = oBeneficio.hayLibros? oBeneficio.libros > 0: true;
+                    } else {
+                        bValorValido = oBeneficio.hayMaterial? oBeneficio.material > 0: true;
+                    }
+                    break;
+            }
+            for (var i in aMeses1) {
+                bMensualidadesValido &= aMeses1[i].valor > 0;
+            }
+            for (var i in aMeses2) {
+                bMensualidadesValido &= aMeses2[i].valor > 0;
+            }
+
+            if (!bCalendarioValido || !bValorValido || !bMensualidadesValido) {
+                this._wizard.invalidateStep(this.byId("paso5"));
+                this.getModel().setProperty("/Completo", false);
+            } else {
+                this._wizard.validateStep(this.byId("paso5"));
+                this.getModel().setProperty("/Completo", true);
+            }
         }
 
         /**

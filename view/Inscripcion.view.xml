@@ -42,7 +42,7 @@
 	            		</f:content>
 	            	</f:SimpleForm>
                 </WizardStep>
-                <WizardStep id="paso3" title="{i18n>PASO3_TITULO}" validated="false">
+                <WizardStep id="paso3" title="{i18n>PASO3_TITULO}" validated="false" complete="handlePaso3Complete">
                 	<f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
                         <f:content>
                             <Label text="{i18n>PASO3_NOMBRE}" required="true" />
@@ -58,7 +58,7 @@
                                 <core:Item text="{nombre}" key="{id}" />
                             </Select>
                             <Label text="{i18n>PASO3_CPF}" required="true" />
-                            <Input value="{documento}" change="validarDocumento" />
+                            <MaskInput mask="{= ${tipoDoc} === 'CPF'? '999.999.999-99': '99.999.999/9999-99'}" placeholderSymbol="_" value="{documento}" change="validarDocumento" />
                             <Label text="{i18n>PASO3_ESTADO}" required="true" />
                             <Select items="{/Estados}" forceSelection="false" selectedKey="{estado}" change="validarPaso3" >
                             	<core:Item text="{nombre} ({id})" key="{id}" />
@@ -66,24 +66,32 @@
                         </f:content>
                     </f:SimpleForm>
                 </WizardStep>
-                <WizardStep id="paso4" title="{i18n>PASO4_TITULO}" validated="false" complete="handlePaso4Complete">
-                	<f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
+                <WizardStep id="paso4" title="{i18n>PASO4_SERIE}" validated="false" activate="handlePaso4Activate">
+                    <MessageStrip
+                        text="{i18n>PASO4_INFO}"
+                        showIcon="true"
+                         visible="{= ${tipo} !== '5' &amp;&amp; ${tipo} !== '6'}"
+                        showCloseButton="false">
+                    </MessageStrip>
+                	<f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" visible="{= ${tipo} === '5' || ${tipo} === '6'}">
                         <f:content>
-                            <Label text="{i18n>PASO4_SERIE}" required="true" visible="{= ${tipo} === '5' || ${tipo} === '6'}" />
-                            <Select items="{/Series}" selectedKey="{serie}" forceSelection="false" visible="{= ${tipo} === '5' || ${tipo} === '6'}" change="validarPaso4">
+                            <Label text="{i18n>PASO4_SERIE}" required="true" />
+                            <Select items="{/Series}" selectedKey="{serie}" forceSelection="false" change="validarPaso4">
                             	<core:Item text="{desc}" key="{id}" />
                             </Select>
-                            <Label text="{i18n>PASO4_REPITE}" visible="{= ${tipo} === '5' || ${tipo} === '6'}"/>
-                            <HBox visible="{= ${tipo} === '5' || ${tipo} === '6'}">
+                            <Label text="{i18n>PASO4_REPITE}" />
+                            <HBox>
 	                            <RadioButton groupName="Repite" text="{i18n>SI}" selected="{repite}" />
 								<RadioButton groupName="Repite" text="{i18n>NO}" selected="true" />
 							</HBox>
                         </f:content>
                     </f:SimpleForm>
+                </WizardStep>
+                <WizardStep id="paso5" title="{i18n>PASO5_TITULO}" validated="false" complete="handlePaso5Complete">
                     <u:CalendarMonthInterval
                         id="calendario"
-                    	width="100%"
-                    	intervalSelection="true"
+                        width="100%"
+                        intervalSelection="true"
                         select="onCalendarioChange" />
                     <f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
                         <f:content>
@@ -102,23 +110,23 @@
                                 }}" />
                         </f:content>
                     </f:SimpleForm>
-                </WizardStep>
-                <WizardStep id="paso5" title="{i18n>PASO5_TITULO}" validated="true" complete="handlePaso5Complete">
                     <!-- Visible para tipo= 4, 5 o 6 con institucion no publica -->
                 	<f:SimpleForm visible="{= (${tipo} === '5' || ${tipo} === '6' || ${tipo} === '4') &amp;&amp; !${publica}}" editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
                         <f:content>
                             <Label text="{i18n>PASO5_PAGO_MATRICULA}" />
                             <HBox>
 	                            <RadioButton groupName="Matricula" text="{i18n>SI}" selected="{hayMatricula}" />
-								<RadioButton groupName="Matricula" text="{i18n>NO}" />
+								<RadioButton groupName="Matricula" text="{i18n>NO}" select="handleSelectNo" />
 							</HBox>
 							<Label text="{i18n>PASO5_MATRICULA}" />
-							<Input enabled="{hayMatricula}" value="{
+							<Input 
+                                id="inputMatricula"
+                                enabled="{hayMatricula}" value="{
                                     path: 'matricula',
                                     type: 'sap.ui.model.type.Float',
                                     formatOptions: {
                                         decimals: 2
-                                    }}" />
+                                    }}" change="validarPaso5" />
                         </f:content>
                     </f:SimpleForm>
 
@@ -128,15 +136,17 @@
                             <Label text="{i18n>PASO5_PAGO_MATERIAL}" />
                             <HBox>
                                 <RadioButton groupName="Material" text="{i18n>SI}" selected="{hayMaterial}" />
-                                <RadioButton groupName="Material" text="{i18n>NO}" />
+                                <RadioButton groupName="Material" text="{i18n>NO}" select="handleSelectNo" />
                             </HBox>
                             <Label text="{i18n>PASO5_MATERIAL}" />
-                            <Input enabled="{hayMaterial}" value="{
+                            <Input 
+                                id="inputMaterial"
+                                enabled="{hayMaterial}" value="{
                                     path: 'material',
                                     type: 'sap.ui.model.type.Float',
                                     formatOptions: {
                                         decimals: 2
-                                    }}" />
+                                    }}" change="validarPaso5" />
                         </f:content>
                     </f:SimpleForm>
 
@@ -146,15 +156,17 @@
                             <Label text="{i18n>PASO5_PAGO_LIBROS}" />
                             <HBox>
                                 <RadioButton groupName="Libros" text="{i18n>SI}" selected="{hayLibros}" />
-                                <RadioButton groupName="Libros" text="{i18n>NO}" />
+                                <RadioButton groupName="Libros" text="{i18n>NO}" select="handleSelectNo" />
                             </HBox>
                             <Label text="{i18n>PASO5_MATERIAL}" />
-                            <Input enabled="{hayLibros}" value="{
+                            <Input
+                                id="inputLibros"
+                                enabled="{hayLibros}" value="{
                                     path: 'libros',
                                     type: 'sap.ui.model.type.Float',
                                     formatOptions: {
                                         decimals: 2
-                                    }}" />
+                                    }}" change="validarPaso5" />
                         </f:content>
                     </f:SimpleForm>
                     <Panel>
@@ -185,7 +197,7 @@
                                                 type: 'sap.ui.model.type.Float',
                                                 formatOptions: {
                                                     decimals: 2
-                                                }}" />
+                                                }}" change="validarPaso5" />
     										<Button icon="sap-icon://copy" press="handleCopyPressed" />
     									</cells>
     								</ColumnListItem>
@@ -208,6 +220,7 @@
     									<cells>
     										<Label required="true" text="{mes}" /> 
     										<Input
+                                                change="validarPaso5"
                                                 name="{mes}" value="{
                                                 path: 'valor',
                                                 type: 'sap.ui.model.type.Float',
@@ -232,9 +245,9 @@
                     visible="{= ${message>/}.length > 0 }"
                     type="Emphasized"
                     press="onMessagePopoverPress" />
+                <Button text="{i18n>ELIMINAR}" type="Reject" icon="sap-icon://sys-cancel" enabled="false" />
 				<ToolbarSpacer/>
 				<Button text="{i18n>GUARDAR}" type="Accept" icon="sap-icon://save" enabled="{= ${message>/}.length === 0 &amp;&amp; ${/Completo}}" />
-				<Button text="{i18n>ELIMINAR}" type="Reject" icon="sap-icon://sys-cancel" enabled="false" />
 				<Button text="{i18n>ENVIAR}" icon="sap-icon://paper-plane" enabled="{= ${message>/}.length === 0 &amp;&amp; ${/Completo}}" />
 			</Toolbar>
 		</footer>
