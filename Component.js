@@ -1,11 +1,11 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"com/blueboot/BeneficioEducacional/model/models"
+	"com/blueboot/BeneficioEducacional/Inscripcion/model/models"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
-	return UIComponent.extend("com.blueboot.BeneficioEducacional.Component", {
+	return UIComponent.extend("com.blueboot.BeneficioEducacional.Inscripcion.Component", {
 
 		metadata: {
 			manifest: "json"

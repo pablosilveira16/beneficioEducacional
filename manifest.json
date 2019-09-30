@@ -1,7 +1,7 @@
 {
 	"_version": "1.12.0",
 	"sap.app": {
-		"id": "com.blueboot.BeneficioEducacional",
+		"id": "com.blueboot.BeneficioEducacional.Inscripcion",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -33,7 +33,7 @@
 	"sap.ui5": {
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "com.blueboot.BeneficioEducacional.view.App",
+			"viewName": "com.blueboot.BeneficioEducacional.Inscripcion.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "App"
@@ -54,7 +54,7 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "com.blueboot.BeneficioEducacional.i18n.i18n"
+					"bundleName": "com.blueboot.BeneficioEducacional.Inscripcion.i18n.i18n"
 				}
 			}
 		},
@@ -70,7 +70,7 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"async": true,
-				"viewPath": "com.blueboot.BeneficioEducacional.view",
+				"viewPath": "com.blueboot.BeneficioEducacional.Inscripcion.view",
 				"controlAggregation": "pages",
 				"controlId": "idAppControl",
 				"clearControlAggregation": false

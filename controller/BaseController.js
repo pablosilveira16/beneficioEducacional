@@ -3,7 +3,7 @@ sap.ui.define([
 ], function(Controller) {
     "use strict";
 
-    return Controller.extend("com.blueboot.BeneficioEducacional.controller.BaseController", {
+    return Controller.extend("com.blueboot.BeneficioEducacional.Inscripcion.controller.BaseController", {
         /**
          * Convenience method for accessing the router in every controller of the application.
          * @public

@@ -5,7 +5,7 @@ sap.ui.getCore().attachInit(function () {
 	"use strict";
 
 	sap.ui.require([
-		"com/blueboot/BeneficioEducacional/test/integration/AllJourneys"
+		"com/blueboot/BeneficioEducacional/Inscripcion/test/integration/AllJourneys"
 	], function () {
 		QUnit.start();
 	});

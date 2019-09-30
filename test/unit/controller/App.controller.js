@@ -1,7 +1,7 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"com/blueboot/BeneficioEducacional/controller/App.controller"
+	"com/blueboot/BeneficioEducacional/Inscripcion/controller/App.controller"
 ], function (Controller) {
 	"use strict";
 

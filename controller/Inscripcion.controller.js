@@ -1,5 +1,5 @@
 sap.ui.define([
-    "com/blueboot/BeneficioEducacional/controller/BaseController",
+    "com/blueboot/BeneficioEducacional/Inscripcion/controller/BaseController",
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/BindingMode",
     "sap/ui/core/message/Message",
@@ -7,12 +7,12 @@ sap.ui.define([
 ], function(Controller, JSONModel, BindingMode, Message, ValueState) {
     "use strict";
 
-    return Controller.extend("com.blueboot.BeneficioEducacional.controller.Inscripcion", {
+    return Controller.extend("com.blueboot.BeneficioEducacional.Inscripcion.controller.Inscripcion", {
 
         /**
          * Called when a controller is instantiated and its View controls (if available) are already created.
          * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-         * @memberOf com.blueboot.BeneficioEducacional.view.Inscripcion
+         * @memberOf com.blueboot.BeneficioEducacional.Inscripcion.view.Inscripcion
          */
         onInit: function() {
             // ---- SAPUI5 MESSAGE POPOVER SAMPLE ----
@@ -59,7 +59,7 @@ sap.ui.define([
         /**
          * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
          * (NOT before the first rendering! onInit() is used for that one!).
-         * @memberOf com.blueboot.BeneficioEducacional.view.Inscripcion
+         * @memberOf com.blueboot.BeneficioEducacional.Inscripcion.view.Inscripcion
          */
         //	onBeforeRendering: function() {
         //
@@ -68,7 +68,7 @@ sap.ui.define([
         /**
          * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
          * This hook is the same one that SAPUI5 controls get after being rendered.
-         * @memberOf com.blueboot.BeneficioEducacional.view.Inscripcion
+         * @memberOf com.blueboot.BeneficioEducacional.Inscripcion.view.Inscripcion
          */
         //	onAfterRendering: function() {
         //
@@ -76,7 +76,7 @@ sap.ui.define([
 
         /**
          * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-         * @memberOf com.blueboot.BeneficioEducacional.view.Inscripcion
+         * @memberOf com.blueboot.BeneficioEducacional.Inscripcion.view.Inscripcion
          */
         //	onExit: function() {
         //
@@ -89,7 +89,7 @@ sap.ui.define([
             //Sacado de Sample de SAPUI5
             // create popover lazily (singleton)
             if (!this._oMessagePopover) {
-                this._oMessagePopover = sap.ui.xmlfragment(this.getView().getId(), "com.blueboot.BeneficioEducacional.view.MessagePopover", this);
+                this._oMessagePopover = sap.ui.xmlfragment(this.getView().getId(), "com.blueboot.BeneficioEducacional.Inscripcion.view.MessagePopover", this);
                 this.getView().addDependent(this._oMessagePopover);
             }
             this._oMessagePopover.openBy(oEvent.getSource());

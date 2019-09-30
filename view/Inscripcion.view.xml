@@ -1,4 +1,4 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="com.blueboot.BeneficioEducacional.controller.Inscripcion" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="com.blueboot.BeneficioEducacional.Inscripcion.controller.Inscripcion" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified">
     <Page title="{i18n>INSCRIPCION_TITULO}">
         <content>
             <Wizard id="wizardInscripcion" complete="wizardCompletedHandler" showNextButton="true">
@@ -175,7 +175,7 @@
                                 <Title text="{i18n>PASO5_MENSUALIDAD}" />
                             </Toolbar>
                         </headerToolbar>
-                        <HBox>                        
+                        <FlexBox direction="{= ${device>/system/phone}? 'Column': 'Row'}">                        
     	                    <Table items="{/Meses1}" growing="true" growingThreshold="10" width="95%" >
     							<columns>
     								<Column width="90px">
@@ -232,7 +232,7 @@
     								</ColumnListItem>
     							</items>
     						</Table>
-    					</HBox>
+    					</FlexBox>
                     </Panel>
                 </WizardStep>
             </Wizard>
