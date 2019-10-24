@@ -42,6 +42,7 @@ sap.ui.define([
                 oBeneficio = {
                     tipo: "1",
                     publica: true,
+                    exteriorCalendario: true,
                     tipoDoc: "CPF",
                     repite: false,
                     hayMatricula: true,

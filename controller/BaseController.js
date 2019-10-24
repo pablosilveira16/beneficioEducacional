@@ -110,15 +110,15 @@ sap.ui.define([
             ]);
 
             oModel.setProperty("/Series5", [
-            	{ id: "1", desc: "Fundamental 1" },
-            	{ id: "2", desc: "Fundamental 2" },
-            	{ id: "3", desc: "Fundamental 3" },
-            	{ id: "4", desc: "Fundamental 4" },
-            	{ id: "5", desc: "Fundamental 5" },
-            	{ id: "6", desc: "Fundamental 6" },
-            	{ id: "7", desc: "Fundamental 7" },
-            	{ id: "8", desc: "Fundamental 8" },
-            	{ id: "9", desc: "Fundamental 9" }
+            	{ id: "1", desc: "1º ano" },
+            	{ id: "2", desc: "2º ano" },
+            	{ id: "3", desc: "3º ano" },
+            	{ id: "4", desc: "4º ano" },
+            	{ id: "5", desc: "5º ano" },
+            	{ id: "6", desc: "6º ano" },
+            	{ id: "7", desc: "7º ano" },
+            	{ id: "8", desc: "8º ano" },
+            	{ id: "9", desc: "9º ano" }
             ]);
 
             oModel.setProperty("/Series6", [

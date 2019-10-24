@@ -22,6 +22,11 @@
                                 <RadioButton groupName="Publica" text="{i18n>SI}" selected="{publica}" />
                                 <RadioButton groupName="Publica" text="{i18n>NO}" />
                             </HBox>
+                            <Label visible="{= ${tipo} === '5' || ${tipo} === '6' || ${tipo} === '7'}" text="{i18n>PASO1_EXTERIOR_CALENDARIO}" />
+                            <HBox visible="{= ${tipo} === '5' || ${tipo} === '6' || ${tipo} === '7'}">
+                                <RadioButton groupName="ExteriorCalendario" text="{i18n>SI}" selected="{exteriorCalendario}" />
+                                <RadioButton groupName="ExteriorCalendario" text="{i18n>NO}" />
+                            </HBox>
                             <Label text="{i18n>PASO1_PERIODO}" required="true" />
                             <Select 
                                 width="120px"
@@ -34,7 +39,63 @@
                     </f:SimpleForm>
                 </WizardStep>
                 <WizardStep id="paso2" title="{i18n>PASO2_TITULO}" validated="false">
-                    <TextArea width="100%" editable="false" value="{i18n>PASO2_TERMINOS1}{i18n>NEWLINE}{i18n>NEWLINE}{i18n>PASO2_TERMINOS2}{i18n>NEWLINE}{i18n>NEWLINE}{i18n>PASO2_TERMINOS3}" rows="8" />
+                    <ScrollContainer
+                        height="250px"
+                        vertical="true"
+                        width="100%"
+                        visible="{= ${tipo} === '1'}">
+                         <core:Fragment
+                            fragmentName="com.blueboot.BeneficioEducacional.Inscripcion.view.Terminos.Beneficio_1" type="HTML" />
+                    </ScrollContainer>
+                    <ScrollContainer
+                        height="250px"
+                        vertical="true"
+                        width="100%"
+                        visible="{= ${tipo} === '2' || ${tipo} === '3'}">
+                        <core:Fragment
+                            fragmentName="com.blueboot.BeneficioEducacional.Inscripcion.view.Terminos.Beneficio_2_3" type="HTML" />
+                    </ScrollContainer>
+                    <ScrollContainer
+                        height="250px"
+                        vertical="true"
+                        width="100%"
+                        visible="{= ${tipo} === '4'}">
+                        <core:Fragment
+                            fragmentName="com.blueboot.BeneficioEducacional.Inscripcion.view.Terminos.Beneficio_4" type="HTML" />
+                    </ScrollContainer>
+                    <ScrollContainer
+                        height="250px"
+                        vertical="true"
+                        width="100%"
+                        visible="{= (${tipo} === '5' || ${tipo} === '6') &amp;&amp; !${publica}}">
+                        <core:Fragment
+                            fragmentName="com.blueboot.BeneficioEducacional.Inscripcion.view.Terminos.Beneficio_5_6_Particular" type="HTML" />
+                    </ScrollContainer>
+                    <ScrollContainer
+                        height="250px"
+                        vertical="true"
+                        width="100%"
+                        visible="{= (${tipo} === '5' || ${tipo} === '6') &amp;&amp; ${publica}}">
+                        <core:Fragment
+                            fragmentName="com.blueboot.BeneficioEducacional.Inscripcion.view.Terminos.Beneficio_5_6_Publica" type="HTML" />
+                    </ScrollContainer>
+                    <ScrollContainer
+                        height="250px"
+                        vertical="true"
+                        width="100%"
+                        visible="{= ${tipo} === '7' &amp;&amp; !${publica}}">
+                        <core:Fragment
+                            fragmentName="com.blueboot.BeneficioEducacional.Inscripcion.view.Terminos.Beneficio_7_Particular" type="HTML" />
+                    </ScrollContainer>
+                    <ScrollContainer
+                        height="250px"
+                        vertical="true"
+                        width="100%"
+                        visible="{= ${tipo} === '7' &amp;&amp; ${publica}}">
+                        <core:Fragment
+                            fragmentName="com.blueboot.BeneficioEducacional.Inscripcion.view.Terminos.Beneficio_7_Publica" type="HTML" />
+                     </ScrollContainer>
+                    
                     <f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="true" emptySpanXL="5" emptySpanL="5" emptySpanM="5" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1">
                         <f:content>
                         	<Label text="{i18n>PASO2_LEIDO}" />
@@ -138,7 +199,7 @@
                                 <RadioButton groupName="Material" text="{i18n>SI}" selected="{hayMaterial}" />
                                 <RadioButton groupName="Material" text="{i18n>NO}" select="handleSelectNo" />
                             </HBox>
-                            <Label text="{i18n>PASO5_MATERIAL}" />
+                            <Label text="{= ${tipo} === '7' ? ${i18n>PASO5_MATERIALPUBLICA} : (${tipo} === '5' || ${tipo} === '6') ? ${i18n>PASO5_UNIFORMEMATERIAL} : '' }" />
                             <Input 
                                 id="inputMaterial"
                                 enabled="{hayMaterial}" value="{
@@ -147,6 +208,7 @@
                                     formatOptions: {
                                         decimals: 2
                                     }}" change="validarPaso5" />
+                           
                         </f:content>
                     </f:SimpleForm>
 
@@ -169,7 +231,7 @@
                                     }}" change="validarPaso5" />
                         </f:content>
                     </f:SimpleForm>
-                    <Panel>
+                    <Panel visible="{= !((${tipo} === '5' || ${tipo} === '6' || ${tipo} === '7') &amp;&amp; ${publica})}">
                         <headerToolbar>
                             <Toolbar>
                                 <Title text="{i18n>PASO5_MENSUALIDAD}" />
@@ -245,10 +307,10 @@
                     visible="{= ${message>/}.length > 0 }"
                     type="Emphasized"
                     press="onMessagePopoverPress" />
-                <Button text="{i18n>ELIMINAR}" type="Reject" icon="sap-icon://sys-cancel" enabled="false" />
+                <Button text="{= ${device>/system/phone}? '': ${i18n>ELIMINAR}}" type="Reject" icon="sap-icon://sys-cancel" enabled="false" />
 				<ToolbarSpacer/>
-				<Button text="{i18n>GUARDAR}" type="Accept" icon="sap-icon://save" enabled="{= ${message>/}.length === 0 &amp;&amp; ${/Completo}}" />
-				<Button text="{i18n>ENVIAR}" icon="sap-icon://paper-plane" enabled="{= ${message>/}.length === 0 &amp;&amp; ${/Completo}}" />
+				<Button text="{= ${device>/system/phone}? '': ${i18n>GUARDAR}}" type="Accept" icon="sap-icon://save" enabled="{= ${message>/}.length === 0 &amp;&amp; ${/Completo}}" />
+				<Button text="{= ${device>/system/phone}? '': ${i18n>ENVIAR}}" icon="sap-icon://paper-plane" enabled="{= ${message>/}.length === 0 &amp;&amp; ${/Completo}}" />
 			</Toolbar>
 		</footer>
     </Page>
